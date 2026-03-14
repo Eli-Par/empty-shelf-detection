@@ -1,0 +1,6 @@
+__pucache__/
+*.pyc
+.env
+.ipynb_checkpoints
+venv/
+data/
