@@ -4,3 +4,6 @@ __pucache__/
 .ipynb_checkpoints
 venv/
 data/
+models/
+runs/
+yolov8n.pt
