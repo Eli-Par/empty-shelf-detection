@@ -5,4 +5,5 @@ from augmentations.interface.augmentation import Augmentation
 class FlipAugmentation(Augmentation):
     
     def augment(self, image):
+        #comment
         return cv2.flip(image, 1)
