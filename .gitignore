@@ -7,3 +7,20 @@ data/
 models/
 runs/
 yolov8n.pt
+
+#####################################
+# GARION IGNORES:
+#####################################
+# Virtual environment
+env/
+.venv/
+# Python cache
+__pycache__/
+*.pyc
+# Mac system files
+.DS_Store
+# VS Code settings
+.vscode/
+# Python package metadata
+*.egg-info/
+#####################################
