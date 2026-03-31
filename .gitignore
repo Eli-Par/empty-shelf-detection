@@ -23,6 +23,4 @@ __pycache__/
 .vscode/
 # Python package metadata
 *.egg-info/
-# images
-garion_images/
 #####################################
