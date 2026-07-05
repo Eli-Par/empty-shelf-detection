@@ -7,6 +7,11 @@ data/
 models/
 runs/
 yolov8n.pt
+yolo11n.pt
+yolo26n.pt
+rtdetr-l.pt
+example.jpg
+temp/
 
 #####################################
 # GARION IGNORES:
