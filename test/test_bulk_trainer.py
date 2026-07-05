@@ -13,7 +13,7 @@ from augmentations.brightness_contrast_augmentation import BrightnessContrastAug
 from augmentations.flip_augmentation import FlipAugmentation
 from augmentations.standard_augmentor import StandardAugmentor
 from augmentations.pass_through_augmentor import PassThroughAugmentor
-from test import bulk_trainer
+from training import bulk_trainer
 
 
 bulk_trainer.train_bulk(
