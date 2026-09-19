@@ -1,0 +1,21 @@
+augmentation,model,precision,recall,mAP50,mAP50-95,precision diff,recall diff,mAP50 diff,mAP50-95 diff
+No Augmentations,yolov8n,0.6340,0.5988,0.6203,0.3720,,,,
+No Augmentations,yolo11n,0.5885,0.5807,0.5664,0.3405,,,,
+No Augmentations,yolo26n,0.5669,0.5768,0.5773,0.3631,,,,
+No Augmentations,rt_detr,0.5954,0.6544,0.6429,0.4112,,,,
+Standard Augmentations,yolov8n,0.6337,0.6059,0.6254,0.3804,-0.0003,0.0071,0.0051,0.0084
+Standard Augmentations,yolo11n,0.6290,0.6324,0.6259,0.3946,0.0406,0.0517,0.0595,0.0541
+Standard Augmentations,yolo26n,0.7587,0.5698,0.6220,0.3861,0.1918,-0.0070,0.0448,0.0230
+Standard Augmentations,rt_detr,0.7181,0.5770,0.6463,0.4204,0.1227,-0.0774,0.0034,0.0092
+OOS Mirroring 1 pass,yolov8n,0.6909,0.5162,0.6034,0.3620,0.0569,-0.0826,-0.0169,-0.0100
+OOS Mirroring 1 pass,yolo11n,0.6465,0.5972,0.6202,0.3805,0.0580,0.0165,0.0538,0.0400
+OOS Mirroring 1 pass,yolo26n,0.6516,0.6208,0.6420,0.3941,0.0847,0.0440,0.0647,0.0310
+OOS Mirroring 1 pass,rt_detr,0.6664,0.6242,0.6518,0.4038,0.0710,-0.0302,0.0089,-0.0074
+OOS Mirroring N2,yolov8n,0.6662,0.6078,0.6252,0.3839,0.0322,0.0090,0.0049,0.0119
+OOS Mirroring N2,yolo11n,0.6559,0.5506,0.5930,0.3690,0.0674,-0.0301,0.0266,0.0285
+OOS Mirroring N2,yolo26n,0.6437,0.6246,0.6379,0.3879,0.0768,0.0478,0.0606,0.0248
+OOS Mirroring N2,rt_detr,0.6608,0.5997,0.6491,0.4069,0.0654,-0.0547,0.0062,-0.0043
+Standard plus OOS Mirroring,yolov8n,0.6071,0.6084,0.6154,0.3675,-0.0269,0.0096,-0.0049,-0.0045
+Standard plus OOS Mirroring,yolo11n,0.6406,0.6803,0.6408,0.3914,0.0521,0.0996,0.0744,0.0509
+Standard plus OOS Mirroring,yolo26n,0.7556,0.6404,0.6747,0.4098,0.1887,0.0636,0.0974,0.0467
+Standard plus OOS Mirroring,rt_detr,0.7434,0.6113,0.6896,0.4358,0.1480,-0.0431,0.0467,0.0246
