@@ -4,7 +4,7 @@ from ultralytics import YOLO
 from prediction.predict import Predict
 
 
-class YoloV8Predict(Predict):
+class YoloV11Predict(Predict):
     MODEL_PATH = "yolo11n.pt"
 
     def _load_model(self, base_path: str):
