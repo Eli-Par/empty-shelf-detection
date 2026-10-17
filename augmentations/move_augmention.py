@@ -88,6 +88,8 @@ class MoveAugmentation(Augmentation):
 
                 return new_image, new_boxes
 
+        return image, bounding_boxes
+
     def _fill_original(self, image: cv2.Mat, new_image: cv2.Mat, bounding_box: BoundingBox, new_x: int):
         x, y, width, height = bounding_box.box
         new_image[y:y + height, x:x + width] = image[y:y + height, new_x:new_x + width].copy()
