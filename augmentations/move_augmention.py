@@ -8,11 +8,13 @@ from data_classes import BoundingBox
 
 class MoveAugmentation(Augmentation):
 
-    def __init__(self, full_to_partial_rate=0.75, max_move_dist=0.75, min_height=0.25, max_height=0.6, max_tries=10000, seed=100):
+    def __init__(self, full_to_partial_rate=0.75, max_move_dist=0.75, min_height=0.25, max_height=0.6, min_box_width=0.1, remove_rate=0.8, max_tries=10000, seed=100):
         self.full_to_partial_rate = full_to_partial_rate
         self.max_move_dist = max_move_dist
         self.min_height = min_height
         self.max_height = max_height
+        self.min_box_width = min_box_width
+        self.remove_rate = remove_rate
         self.max_tries = max_tries
         self.rng = random.Random(seed)
 
@@ -20,7 +22,7 @@ class MoveAugmentation(Augmentation):
         h = image.shape[0]
         w = image.shape[1]
 
-        (content_left, content_right) = self._get_content_bounds(image, 255)
+        (content_left, content_right) = self._get_content_bounds(image, 235)
         content_width = content_right - content_left
 
         bounding_box = None
@@ -75,14 +77,25 @@ class MoveAugmentation(Augmentation):
                 new_image = image.copy()
                 new_boxes = []
 
-                # fill original bounding box with pixels from new bounding box position
-                self._fill_original(image, new_image, bounding_box, new_x)
+                remove_original = self.rng.random() < self.remove_rate
+
+                # fill original bounding box with pixels from new bounding box position if original is being removed
+                if remove_original:
+                    self._fill_original(image, new_image, bounding_box, new_x)
+
+                # set partial width if original is wide enough
+                min_new_box_width = int(content_width * self.min_box_width)
+                if new_bounding_box.box[2] > min_new_box_width:
+                    new_width = self.rng.randint(min_new_box_width, new_bounding_box.box[2])
+                    x, y, _, height = new_bounding_box.box
+
+                    new_bounding_box.box = (x, y, new_width, height)
 
                 # copy pixels from original bounding box into new bounding box, which is aligned at the bottom
-                self._fill_new(image, new_image, bounding_box, new_x, new_y, new_height)
+                self._fill_new(image, new_image, bounding_box, new_x, new_y, new_bounding_box.box[2], new_height)
 
-                # add all bounding boxes, except the removed box, append the new box and shuffle
-                new_boxes = [box for box in bounding_boxes if box is not bounding_box]
+                # add all bounding boxes, except the original box if filled in, append the new box and shuffle
+                new_boxes = [box for box in bounding_boxes if box is not bounding_box or not remove_original]
                 new_boxes.append(new_bounding_box)
                 self.rng.shuffle(new_boxes)
 
@@ -94,11 +107,11 @@ class MoveAugmentation(Augmentation):
         x, y, width, height = bounding_box.box
         new_image[y:y + height, x:x + width] = image[y:y + height, new_x:new_x + width].copy()
 
-    def _fill_new(self, image: cv2.Mat, new_image: cv2.Mat, bounding_box: BoundingBox, new_x: int, new_y: int, new_height: int):
+    def _fill_new(self, image: cv2.Mat, new_image: cv2.Mat, bounding_box: BoundingBox, new_x: int, new_y: int, new_width: int, new_height: int):
         x, y, width, height = bounding_box.box
         src_y = y + height - new_height
 
-        new_image[new_y:new_y + new_height, new_x:new_x + width] = image[src_y:src_y + new_height, x:x + width].copy()
+        new_image[new_y:new_y + new_height, new_x:new_x + new_width] = image[src_y:src_y + new_height, x:x + new_width].copy()
 
     def _overlaps_any(self, new_box: BoundingBox, existing_boxes: list[BoundingBox], type: int, x_threshold: float) -> bool:
         x1, y1, w1, h1 = new_box.box
@@ -107,7 +120,8 @@ class MoveAugmentation(Augmentation):
 
             x2, y2, w2, h2 = box.box
 
-            if type == box.type:
+            # add horizontal padding around full boxes if next to a full box
+            if type == box.type and type == 0:
                 padding = int(w1 * x_threshold)
                 x1_adjusted = x1 - padding
                 w1_adjusted = w1 + 2 * padding
@@ -125,7 +139,7 @@ class MoveAugmentation(Augmentation):
         if len(image.shape) == 2:
             content_mask = image < threshold
         else:
-            content_mask = (image[:, :, :3] < threshold).all(axis=2)
+            content_mask = (image[:, :, :3] < threshold).any(axis=2)
 
         # Find columns that have a pixel below the thershold
         content_columns = content_mask.any(axis=0)

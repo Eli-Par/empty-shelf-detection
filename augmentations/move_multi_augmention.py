@@ -9,7 +9,7 @@ from data_classes import BoundingBox
 
 class MoveMultiAugmentation(Augmentation):
 
-    def __init__(self, move_percent_min=0.25, move_percent_max=1,  full_to_partial_rate=0.75, max_move_dist=0.75, min_height=0.25, max_height=0.6, max_tries=10000, seed=100):
+    def __init__(self, move_percent_min=0.5, move_percent_max=1,  full_to_partial_rate=0.75, max_move_dist=0.75, min_height=0.25, max_height=0.6, min_box_width=0.1, remove_rate=0.8, max_tries=10000, seed=100):
         self.move_percent_min = move_percent_min
         self.move_percent_max = move_percent_max
         self.full_to_partial_rate = full_to_partial_rate
@@ -20,7 +20,7 @@ class MoveMultiAugmentation(Augmentation):
 
         self.rng = random.Random(seed)
 
-        self.moveAugmentation = MoveAugmentation(full_to_partial_rate, max_move_dist, min_height, max_height, max_tries, self.rng.randint(-(2**31), 2**31 - 1))
+        self.moveAugmentation = MoveAugmentation(full_to_partial_rate, max_move_dist, min_height, max_height, min_box_width, remove_rate, max_tries, self.rng.randint(-(2**31), 2**31 - 1))
 
     def augment(self, image: cv2.Mat, bounding_boxes: list[BoundingBox]):
         new_image = image
