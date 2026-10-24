@@ -4,7 +4,17 @@ from ultralytics import RTDETR, YOLO
 
 TEST_DATA = "data/empty-shelf-data/data.yaml"
 
-AUG_ORDER = ["No Augmentations", "Standard Augmentations"]
+AUG_ORDER = [
+    "No Augmentations", 
+    "Standard Augmentations", 
+    "OOS Mirroring 1 pass",
+    "OOS Mirroring N2",
+    "Standard plus OOS Mirroring",
+    "Move Augmentation", 
+    "Multi Move Augmentation", 
+    "Multi Move Mirror Augmentation", 
+    "Standard Multi Move Mirror Augmentation"
+]
 MODEL_ORDER = ["yolov8n", "yolo11n", "yolo26n", "rt_detr"]
 
 def evaluate_model(weights_path, data_yaml):
@@ -79,7 +89,7 @@ def sort_results(df, aug_order, model_order):
     return df
 
 
-df = run_grid("runs/detect/tests")
+df = run_grid("runs/detect/tests-move-mirror")
 df = sort_results(df, AUG_ORDER, MODEL_ORDER)
 
 df.to_csv("model_comparison.csv", index=False)
