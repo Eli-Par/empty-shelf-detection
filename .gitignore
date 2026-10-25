@@ -6,10 +6,7 @@ venv/
 data/
 models/
 runs/
-yolov8n.pt
-yolo11n.pt
-yolo26n.pt
-rtdetr-l.pt
+/*.pt
 example.jpg
 model_comparison.csv
 temp/
