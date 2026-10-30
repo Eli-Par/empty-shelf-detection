@@ -28,7 +28,7 @@ def load_samples(split: str, render_boxes: bool = False):
     final_images = []
     final_rendered_images = []
     final_boxes = []
-    for i in range(min(10, len(images))):
+    for i in range(min(8, len(images))):
         image, box = remove_letterboxing(images[i], boxes[i])
 
         image_base64 = image_b64(image)
