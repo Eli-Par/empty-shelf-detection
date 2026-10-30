@@ -1,0 +1,5 @@
+augmentation: ../augmentation/images
+prediction: ../prediction/images
+
+nc: 2
+names: ['empty', 'front']

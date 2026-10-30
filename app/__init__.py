@@ -9,4 +9,7 @@ def create_app():
     from .prediction_routes import prediction
     app.register_blueprint(prediction)
 
+    from .augmentation_routes import augmentation
+    app.register_blueprint(augmentation)
+
     return app

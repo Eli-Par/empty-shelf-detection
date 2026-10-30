@@ -5,6 +5,9 @@ import cv2
 from flask import Blueprint, jsonify, request
 import numpy as np
 
+from app.app_util import add_letterboxing, load_samples, remove_letterboxing
+from data_classes import BoundingBox
+from data_loader.loader import Loader
 from prediction.yolov8_predict import YoloV8Predict
 from prediction.yolov11_predict import YoloV11Predict
 from prediction.yolov26_predict import YoloV26Predict
@@ -41,6 +44,13 @@ def model_options():
 def augmentation_options():
     return jsonify(get_model_folders())
 
+@prediction.route("/api/prediction/image_options", methods=["GET"])
+def image_options():
+    images, _, _ = load_samples("prediction")
+
+    return jsonify(images)
+
+
 @prediction.route("/api/prediction/predict", methods=["POST"])
 def predict():
     model = request.form.get("model")
@@ -76,31 +86,47 @@ def predict():
             "message": "Invalid image"
         }), 400
 
+    letterboxed_image = add_letterboxing(image)
+
     predictor = models[model](augmentation)
-    boxes = predictor.predict(image)
+    boxes = predictor.predict(letterboxed_image)
 
-    rendered_image = render(image, boxes, type_names, type_colours)
+    # Calculate scale and centered padding
+    original_height, original_width = image.shape[:2]
+    letterboxed_height, letterboxed_width = letterboxed_image.shape[:2]
+    scale = min(letterboxed_width / original_width, letterboxed_height / original_height)
 
-    success, buffer = cv2.imencode(".png", rendered_image)
+    pad_x = (letterboxed_width - original_width * scale) / 2
+    pad_y = (letterboxed_height - original_height * scale) / 2
 
-    if not success:
-        return jsonify({
-            "error": 500,
-            "message": "Failed to encode rendered image"
-        }), 500
+    new_boxes = []
+    for box in boxes:
+        x, y, width, height = box.box
 
-    image_base64 = base64.b64encode(buffer).decode("utf-8")
+        x1 = round((x - pad_x) / scale)
+        y1 = round((y - pad_y) / scale)
+        x2 = round((x + width - pad_x) / scale)
+        y2 = round((y + height - pad_y) / scale)
+
+        x1 = max(0, min(original_width, x1))
+        y1 = max(0, min(original_height, y1))
+        x2 = max(0, min(original_width, x2))
+        y2 = max(0, min(original_height, y2))
+
+        new_boxes.append(BoundingBox(box.type, (x1, y1, max(0, x2 - x1), max(0, y2 - y1))))
+
+    boxes = new_boxes
     
     return jsonify({
-        "image": image_base64,
+        "image": '', # image_base64
         "boxes": [
             {
-                "type": box.type,
+                "type": str(box.type),
                 "box": {
-                    "x": box.box[0],
-                    "y": box.box[1],
-                    "width": box.box[2],
-                    "height": box.box[3],
+                    "x": int(box.box[0]),
+                    "y": int(box.box[1]),
+                    "width": int(box.box[2]),
+                    "height": int(box.box[3]),
                 },
             }
             for box in boxes

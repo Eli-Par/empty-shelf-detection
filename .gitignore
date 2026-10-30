@@ -3,7 +3,7 @@ __pucache__/
 .env
 .ipynb_checkpoints
 venv/
-data/
+/data/
 models/
 runs/
 /*.pt
