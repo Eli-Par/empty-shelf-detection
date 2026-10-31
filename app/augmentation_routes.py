@@ -17,8 +17,8 @@ augmentation = Blueprint("augmentation", __name__)
 augmentations = {
     "OOS Mirror": lambda: OosMirroringAugmentation(seed=None),
     "OOS Mirror 2N": lambda: OosMirroringRepeatedAugmentation(seed=None),
-    "Move": lambda: MoveAugmentation(seed=None),
-    "Move Multi": lambda: MoveMultiAugmentation(seed=None),
+    "Move": lambda: MoveAugmentation(seed=None, max_move_dist=0.35),
+    "Move Multi": lambda: MoveMultiAugmentation(seed=None, max_move_dist=0.35, move_percent_min=0.7, move_percent_max=1),
 }
 
 @augmentation.route("/api/augmentation/augmentation_options", methods=["GET"])
@@ -27,7 +27,7 @@ def augmentation_options():
 
 @augmentation.route("/api/augmentation/image_options", methods=["GET"])
 def image_options():
-    images, rendered_images, boxes = load_samples("prediction", render_boxes=True) #TODO change split
+    images, rendered_images, boxes = load_samples("augmentation", render_boxes=True)
     
     return jsonify([
         {
