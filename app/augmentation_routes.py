@@ -6,6 +6,7 @@ import numpy as np
 
 from app.app_util import load_samples
 from app.app_util import image_b64
+from augmentations.lighting_swap_garion_aug import LightingSwapGarionAug
 from augmentations.move_augmention import MoveAugmentation
 from augmentations.move_multi_augmention import MoveMultiAugmentation
 from augmentations.oos_mirroring_augmentation import OosMirroringAugmentation
@@ -19,6 +20,7 @@ augmentations = {
     "OOS Mirror 2N": lambda: OosMirroringRepeatedAugmentation(seed=None),
     "Move": lambda: MoveAugmentation(seed=None, max_move_dist=0.35),
     "Move Multi": lambda: MoveMultiAugmentation(seed=None, max_move_dist=0.35, move_percent_min=0.7, move_percent_max=1),
+    "Lighting Swap": lambda: LightingSwapGarionAug(),
 }
 
 @augmentation.route("/api/augmentation/augmentation_options", methods=["GET"])
