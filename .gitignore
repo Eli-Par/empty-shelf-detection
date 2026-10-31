@@ -10,6 +10,7 @@ runs/
 example.jpg
 model_comparison.csv
 temp/
+reviewed/
 
 #####################################
 # GARION IGNORES:
